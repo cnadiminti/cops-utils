@@ -6,8 +6,9 @@ from setuptools import setup
 setup(
     name='cops-utils',
     version='0.0.1dev0',
-    description='',
-    url='',
+    description='''Utilities to convert COPS
+        (Container Orchestration Platform Specifications)''',
+    url='https://github.com/cnadiminti/cops-utils',
     author='Chandra Nadiminti <nadiminti.chandra@gmail.com>',
     license='Apache License 2.0',
     packages=find_packages(exclude=['tests.*', 'tests']),
