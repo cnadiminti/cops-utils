@@ -17,7 +17,7 @@ setup(
     tests_require=['pytest', 'pytest-cov'],
     entry_points="""
     [console_scripts]
-    dockercompose2marathon=cops_utils.dockercompose2marathon.main:main
+    dockercompose2marathon=cops_utils.dockercompose2marathon:main
     """,
     classifiers=[
         'Development Status :: 1 - Planning',
