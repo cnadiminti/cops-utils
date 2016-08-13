@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.4
 
 COPY dist/cops-utils-*.tar.gz /
 
