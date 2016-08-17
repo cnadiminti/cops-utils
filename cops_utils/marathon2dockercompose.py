@@ -101,9 +101,29 @@ def parse_apps(apps):
                    default_flow_style=False
                    )
 
+def help_doc():
+    print  '\n', \
+           'Utility to create a docker-compose file with the containers details from Marathon \n', \
+           '\n', \
+           'Usage: python marathon2dockercompose.py (-b|--baseurl url) (-u|--user user) ', \
+	   '(-p|--pswd password) or (-h|--help) \n', \
+           '\n', \
+           '-b or --baseurl    Marathon Base URL \n', \
+           '-u or --user    Marathon Login user name \n', \
+           '-p or --pswd    Marahon Login password \n', \
+           '-h or --help    Print this and exit'
+
 def main():
     print 'Welcome!!!'
-    base_url, user, pswd = arguments_parse()
+    if ("-h" or "--help") in sys.argv:
+        help_doc()
+        sys.exit()
+    elif ("-b" or "--baseurl" or "-u" or "--user" or "-p" or "--pswd") in sys.argv:
+        base_url, user, pswd = arguments_parse()
+    else:
+        print '\n', \
+            'Enter a valid argument tag or use "-h" for Help \n'
+        sys.exit()
     resp = requests.get(base_url, verify=False,
                         auth=HTTPBasicAuth(user, pswd))
     parse_apps(json.loads(resp.content)['apps'])
