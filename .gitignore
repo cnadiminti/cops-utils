@@ -90,3 +90,5 @@ ENV/
 
 # Docker compose ouptput file
 docker-compose.yml
+*.pydevproject
+*.project

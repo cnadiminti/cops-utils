@@ -1,13 +1,6 @@
 #!/usr/bin/python
-######################################################################
 #
-# (C) Copyright  Chandra, Nadiminti 2015-16
-#
-######################################################################
-#
-# @filename : marathon2dockercompose.py
-#
-# @author   : Chandra Mohan Babu Nadiminti
+# @authors   : Chandra Nadiminti, Ajay Balasa
 #
 # @create   : 08/08/2016
 #
@@ -16,8 +9,6 @@
 # @component:
 #
 # @comments :
-#
-######################################################################
 
 ######################################################################
 # Package Imports
@@ -101,38 +92,17 @@ def parse_apps(apps):
                    default_flow_style=False
                    )
 
-def help_doc():
-    print  '\n', \
-           'Utility to create a docker-compose file with the containers details from Marathon \n', \
-           '\n', \
-           'Usage: python marathon2dockercompose.py (-b|--baseurl url) (-u|--user user) ', \
-	   '(-p|--pswd password) [-h|--help] \n', \
-           '\n', \
-           '-b or --baseurl    Marathon Base URL \n', \
-           '-u or --user       Marathon Login user name \n', \
-           '-p or --pswd       Marahon Login password \n', \
-           '-h or --help       Print this message and exit'
-
 def main():
-    print 'Welcome!!!'
-    if ("-h" or "--help") in sys.argv:
-        help_doc()
-        sys.exit()
-    elif ("-b" or "--baseurl") and ("-u" or "--user") and ("-p" or "--pswd") in sys.argv:
-        base_url, user, pswd = arguments_parse()
-    else:
-        print '\n', \
-            'Missing arguments or Invalid argument tags, use "-h" for Help \n'
-        sys.exit()
+    base_url, user, pswd = arguments_parse()
     resp = requests.get(base_url, verify=False,
                         auth=HTTPBasicAuth(user, pswd))
     parse_apps(json.loads(resp.content)['apps'])
 
 def arguments_parse():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-b','--baseurl', help='Marathon API URL')
-    parser.add_argument('-u','--user', help='Marathon user name')
-    parser.add_argument('-p','--pswd', help='Marathon login password')
+    parser = argparse.ArgumentParser(description='Utility to create a docker-compose file with the containers details from Marathon')
+    parser.add_argument('-b','--baseurl', help='Marathon base API URL', required=True)
+    parser.add_argument('-u','--user', help='Marathon login user name', required=True)
+    parser.add_argument('-p','--pswd', help='Marathon login password', required=True)
     args = parser.parse_args()
     base_url=args.baseurl
     user=args.user
