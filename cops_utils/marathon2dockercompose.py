@@ -13,12 +13,10 @@
 ######################################################################
 # Package Imports
 ######################################################################
-import subprocess
 import json
 import yaml
 import requests
 from requests.auth import HTTPBasicAuth
-import sys
 import argparse
 
 ######################################################################
@@ -92,21 +90,30 @@ def parse_apps(apps):
                    default_flow_style=False
                    )
 
+
 def main():
     base_url, user, pswd = arguments_parse()
+
+#    TODO: Exception handling for invalid passwrods/user/https code
+
     resp = requests.get(base_url, verify=False,
                         auth=HTTPBasicAuth(user, pswd))
     parse_apps(json.loads(resp.content)['apps'])
 
+
 def arguments_parse():
-    parser = argparse.ArgumentParser(description='Utility to create a docker-compose file with the containers details from Marathon')
-    parser.add_argument('-b','--baseurl', help='Marathon base API URL', required=True)
-    parser.add_argument('-u','--user', help='Marathon login user name', required=True)
-    parser.add_argument('-p','--pswd', help='Marathon login password', required=True)
+    parser = argparse.ArgumentParser(description='Utility to create a \
+            docker-compose file with the containers details from Marathon')
+    parser.add_argument('-b', '--baseurl', help='Marathon base API URL',
+                        required=True)
+    parser.add_argument('-u', '--user', help='Marathon login user name',
+                        required=True)
+    parser.add_argument('-p', '--pswd', help='Marathon login password',
+                        required=True)
     args = parser.parse_args()
-    base_url=args.baseurl
-    user=args.user
-    pswd=args.pswd
+    base_url = args.baseurl
+    user = args.user
+    pswd = args.pswd
     return base_url, user, pswd
 
 if __name__ == '__main__':
