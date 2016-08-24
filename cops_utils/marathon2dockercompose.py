@@ -18,6 +18,7 @@ import yaml
 import requests
 from requests.auth import HTTPBasicAuth
 import argparse
+import sys
 
 ######################################################################
 # Procedures
@@ -93,25 +94,44 @@ def parse_apps(apps):
 
 def main():
     base_url, user, pswd = arguments_parse()
+    try:
+        resp = requests.get(base_url, timeout=5, verify=False,
+                            auth=HTTPBasicAuth(user, pswd))
+    except requests.exceptions.Timeout:
+        print "Request timed out after specified timeout value."
+        sys.exit(1)
+    except requests.exceptions.InvalidURL:
+        print "Invalid URL"
+        sys.exit(1)
+    except requests.exceptions.ConnectionError:
+        print "Connection errors"
+        sys.exit(1)
+    except requests.exceptions.SSLError:
+        print "SSL errors"
+        sys.exit(1)
+    except requests.exceptions.RequestException as e:
+        print e
+        sys.exit(1)
 
-#    TODO: Exception handling for invalid passwrods/user/https code
-
-    resp = requests.get(base_url, verify=False,
-                        auth=HTTPBasicAuth(user, pswd))
-    parse_apps(json.loads(resp.content)['apps'])
+    try:
+        parse_apps(json.loads(resp.content)['apps'])
+    except ValueError, e:
+        print e
+        print "Returned JSON may be Invalid because of bad credentials!"
 
 
 def arguments_parse():
     parser = argparse.ArgumentParser(description='Utility to create a \
             docker-compose file with the containers details from Marathon')
-    parser.add_argument('-b', '--baseurl', help='Marathon base API URL',
+    parser.add_argument('--url', help='Marathon base API URL \
+                        Ex: https://mantl-cisco.com//marathon/v2/apps',
                         required=True)
     parser.add_argument('-u', '--user', help='Marathon login user name',
                         required=True)
     parser.add_argument('-p', '--pswd', help='Marathon login password',
                         required=True)
     args = parser.parse_args()
-    base_url = args.baseurl
+    base_url = args.url
     user = args.user
     pswd = args.pswd
     return base_url, user, pswd
