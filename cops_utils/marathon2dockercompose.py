@@ -97,6 +97,7 @@ def main():
     try:
         resp = requests.get(base_url, timeout=5, verify=False,
                             auth=HTTPBasicAuth(user, pswd))
+        resp.raise_for_status()
     except requests.exceptions.Timeout:
         print "Request timed out after specified timeout value."
         sys.exit(1)
