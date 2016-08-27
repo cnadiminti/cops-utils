@@ -19,11 +19,13 @@ import requests
 from requests.auth import HTTPBasicAuth
 import argparse
 import sys
+import logging
 
 ######################################################################
 # Procedures
 ######################################################################
 compose = {'version': '2'}
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
 
 
 def parse_app(app):
@@ -99,26 +101,22 @@ def main():
                             auth=HTTPBasicAuth(user, pswd))
         resp.raise_for_status()
     except requests.exceptions.Timeout:
-        print "Request timed out after specified timeout value."
+        logging.error("Request timed out after specified timeout value.")
         sys.exit(1)
     except requests.exceptions.InvalidURL:
-        print "Invalid URL"
+        logging.error("Invalid URL")
         sys.exit(1)
     except requests.exceptions.ConnectionError:
-        print "Connection errors"
+        logging.error("Connection errors")
         sys.exit(1)
     except requests.exceptions.SSLError:
-        print "SSL errors"
+        logging.error("SSL errors")
         sys.exit(1)
     except requests.exceptions.RequestException as e:
-        print e
+        logging.error(e)
         sys.exit(1)
 
-    try:
-        parse_apps(json.loads(resp.content)['apps'])
-    except ValueError, e:
-        print e
-        print "Returned JSON may be Invalid because of bad credentials!"
+    parse_apps(json.loads(resp.content)['apps'])
 
 
 def arguments_parse():
